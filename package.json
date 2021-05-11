@@ -10,7 +10,7 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:vsbuddy.helloWorld"
+    "onView:vsbuddies"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -19,7 +19,15 @@
         "command": "vsbuddy.helloWorld",
         "title": "Hello World"
       }
-    ]
+    ],
+    "views": {
+      "explorer": [
+        {
+          "id": "vsbuddies",
+          "name": "VS Buddy"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

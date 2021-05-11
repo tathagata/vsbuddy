@@ -2,6 +2,8 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { Octokit } from '@octokit/rest';
+import { BuddyProvider, Buddy } from './buddies';
+
 
 
 // this method is called when your extension is activated
@@ -15,16 +17,21 @@ export function activate(context: vscode.ExtensionContext) {
 	console.log('Congratulations, your extension "vsbuddy" is now active!');
 	console.log('Congratulations, your extension "vsbuddy" is now active!');
 
-	const octokit = new Octokit({
-		auth: "INSERT CODE HERE",
-	});
+	// const octokit = new Octokit({
+	// 	auth: "INSERT CODE HERE",
+	// });
 
-	octokit.rest.users.listFollowedByAuthenticated().then((values) => {
-		console.log(values);
-		for (let value of values.data){
-			console.log(value["login"]);
-		}
-	});
+	// octokit.rest.users.listFollowedByAuthenticated().then((values) => {
+	// 	console.log(values);
+	// 	for (let value of values.data){
+	// 		console.log(value["login"]);
+	// 	}
+	// });
+	const buddiesProvider = new BuddyProvider(vscode.workspace.rootPath);
+	vscode.window.registerTreeDataProvider('vsbuddies', BuddyProvider);
+	// vscode.commands.registerCommand('vsbuddies.refreshEntry', () =>
+	// 	buddiesProvider.refresh()
+	// );
 
 
 	// The command has been defined in the package.json file
