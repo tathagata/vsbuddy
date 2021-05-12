@@ -28,7 +28,7 @@ export function activate(context: vscode.ExtensionContext) {
 	// 	}
 	// });
 	const buddiesProvider = new BuddyProvider(vscode.workspace.rootPath);
-	vscode.window.registerTreeDataProvider('vsbuddies', BuddyProvider);
+	vscode.window.registerTreeDataProvider('vsbuddies', buddiesProvider);
 	// vscode.commands.registerCommand('vsbuddies.refreshEntry', () =>
 	// 	buddiesProvider.refresh()
 	// );

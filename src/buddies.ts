@@ -16,29 +16,24 @@ export class BuddyProvider implements vscode.TreeDataProvider<Buddy>{
             vscode.window.showInformationMessage("No Buddy in empty workspace");
             return Promise.resolve([]);
         }
+        console.log(element);
 
-        if (element) {
-            return Promise.resolve(
-                this.getBuddies()
-            );
-        }
+        return Promise.resolve(this.getBuddies());
+
+
     }
 
     getBuddies() {
-        let buddyList: Buddy[] = [];
         const octokit = new Octokit({
             auth: "",
         });
+        console.log("Querying github");
+        let buddyNames = octokit.rest.users.listFollowedByAuthenticated().then((values) => { return values.data.map(user => user["login"]); });
+        let buddyList = buddyNames.then((names) => names.map(name => new Buddy(name, "live", vscode.TreeItemCollapsibleState.Collapsed)));
 
-        octokit.rest.users.listFollowedByAuthenticated().then((values) => {
-            for (let value of values.data) {
-                buddyList.concat(new Buddy(value["login"], "live", vscode.TreeItemCollapsibleState.Collapsed));
-            }
-        });
-        console.log(buddyList);
+        console.log("buddyList" + buddyList);
         return buddyList;
     }
-
 
 }
 
