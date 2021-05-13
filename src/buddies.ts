@@ -2,6 +2,7 @@ import { Octokit } from '@octokit/rest';
 import { pathToFileURL } from 'node:url';
 import * as vscode from 'vscode';
 import * as path from 'path';
+import * as vsls from 'vsls';
 
 
 export class BuddyProvider implements vscode.TreeDataProvider<Buddy>{
@@ -12,15 +13,7 @@ export class BuddyProvider implements vscode.TreeDataProvider<Buddy>{
     }
 
     getChildren(element?: Buddy): Thenable<Buddy[]> {
-        if (!this.workspaceRoot) {
-            vscode.window.showInformationMessage("No Buddy in empty workspace");
-            return Promise.resolve([]);
-        }
-        console.log(element);
-
         return Promise.resolve(this.getBuddies());
-
-
     }
 
     getBuddies() {
@@ -28,8 +21,7 @@ export class BuddyProvider implements vscode.TreeDataProvider<Buddy>{
             auth: "",
         });
         console.log("Querying github");
-        let buddyNames = octokit.rest.users.listFollowedByAuthenticated().then((values) => { return values.data.map(user => user["login"]); });
-        let buddyList = buddyNames.then((names) => names.map(name => new Buddy(name, "live", vscode.TreeItemCollapsibleState.Collapsed)));
+        let buddyList = octokit.rest.users.listFollowedByAuthenticated().then((values) => values.data.map(user => new Buddy(user["login"], user["avatar_url"], "live", vscode.TreeItemCollapsibleState.Collapsed)));
 
         console.log("buddyList" + buddyList);
         return buddyList;
@@ -39,6 +31,7 @@ export class BuddyProvider implements vscode.TreeDataProvider<Buddy>{
 
 export class Buddy extends vscode.TreeItem {
     constructor(public readonly label: string,
+        public readonly avatarUrl: string,
         private readonly status: string,
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
         public readonly command?: vscode.Command) {
@@ -48,8 +41,8 @@ export class Buddy extends vscode.TreeItem {
         this.description = this.status;
     }
     iconPath = {
-        light: path.join(__filename, "..", "..", "resources", "light", "buddy.svg"),
-        dark: path.join(__filename, "..", "..", "resources", "dark", "buddy.svg"),
+        light: vscode.Uri.parse(this.avatarUrl),
+        dark: vscode.Uri.parse(this.avatarUrl),
     };
 
     contextValue = "buddy";
