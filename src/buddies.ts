@@ -13,7 +13,10 @@ export class BuddyProvider implements vscode.TreeDataProvider<Buddy>{
     }
 
     getChildren(element?: Buddy): Thenable<Buddy[]> {
-        return Promise.resolve(this.getBuddies());
+        if (!element) {
+            return Promise.resolve(this.getBuddies());
+        }
+
     }
 
     getBuddies() {
