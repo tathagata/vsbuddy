@@ -12,9 +12,12 @@ export class BuddyProvider implements vscode.TreeDataProvider<Buddy>{
         return element;
     }
 
-    getChildren(element?: Buddy): Thenable<Buddy[]> {
+    getChildren(element?: Buddy): Thenable<Buddy[] | Question[]> {
         if (!element) {
             return Promise.resolve(this.getBuddies());
+        } else {
+            console.log(element);
+            return Promise.resolve([new Question("Question", "s", "live", vscode.TreeItemCollapsibleState.None)]);
         }
 
     }
@@ -33,6 +36,25 @@ export class BuddyProvider implements vscode.TreeDataProvider<Buddy>{
 }
 
 export class Buddy extends vscode.TreeItem {
+    constructor(public readonly label: string,
+        public readonly avatarUrl: string,
+        private readonly status: string,
+        public readonly collapsibleState: vscode.TreeItemCollapsibleState,
+        public readonly command?: vscode.Command) {
+        super(label, collapsibleState);
+
+        this.tooltip = `${this.label}-${this.status}`;
+        this.description = this.status;
+    }
+    iconPath = {
+        light: vscode.Uri.parse(this.avatarUrl),
+        dark: vscode.Uri.parse(this.avatarUrl),
+    };
+
+    contextValue = "buddy";
+}
+
+export class Question extends vscode.TreeItem {
     constructor(public readonly label: string,
         public readonly avatarUrl: string,
         private readonly status: string,
