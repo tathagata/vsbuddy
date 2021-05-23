@@ -3,6 +3,8 @@ import { pathToFileURL } from 'node:url';
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as vsls from 'vsls';
+import axios from 'axios';
+
 
 
 export class BuddyProvider implements vscode.TreeDataProvider<Buddy>{
@@ -12,13 +14,19 @@ export class BuddyProvider implements vscode.TreeDataProvider<Buddy>{
         return element;
     }
 
-    getChildren(element?: Buddy): Thenable<Buddy[] | Question[]> {
+    getChildren(element?: Buddy): Thenable<void | Buddy[] | Question[]> {
         if (!element) {
             return Promise.resolve(this.getBuddies());
         } else {
             console.log(element);
-            return Promise.resolve([new Question("Question", "s", "live", vscode.TreeItemCollapsibleState.None)]);
+            return this.getQuestions();
         }
+
+    }
+
+    async getQuestions(): Promise<void | Question[]> {
+        return axios.get("http://localhost:1337/Questions")
+            .then(result => { return result.data.map(question => new Question(question["title"], "live", question["description"], vscode.TreeItemCollapsibleState.None)); });
 
     }
 
