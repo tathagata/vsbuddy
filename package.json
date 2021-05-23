@@ -10,7 +10,7 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:vsbuddy.helloWorld"
+    "onView:vsbuddies"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -19,7 +19,15 @@
         "command": "vsbuddy.helloWorld",
         "title": "Hello World"
       }
-    ]
+    ],
+    "views": {
+      "explorer": [
+        {
+          "id": "vsbuddies",
+          "name": "VS Buddy"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
@@ -44,6 +52,8 @@
   },
   "dependencies": {
     "@octokit/openapi-types": "^7.0.0",
-    "@octokit/rest": "^18.5.3"
+    "@octokit/rest": "^18.5.3",
+    "axios": "^0.21.1",
+    "vsls": "^1.0.3015"
   }
 }
